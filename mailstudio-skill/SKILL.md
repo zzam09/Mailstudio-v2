@@ -54,24 +54,26 @@ Worker live URL:  https://resend-worker.actionszam.workers.dev/send
 ## Key File Map
 
 ```
-src/App.tsx                              — root component, all state, send logic
+src/App.tsx                              — root layout, route state, and panel wiring
 src/lib/db.ts                            — Turso client init, getDb()
 src/lib/email-config.ts                  — EmailConfig interface + defaultConfig
-src/lib/email-template.ts               — generateEmailHtml() 
-src/lib/email-templates.ts              — 6 preset templates
+src/lib/email-template.ts               — generateEmailHtml() + branded email markup
+src/lib/email-templates.ts              — preset templates and starter content
+src/lib/generate-guide.ts                — detectTemplateFields() + generateGuide()
 src/lib/persistence.ts                  — save/load config+draft (Turso or localStorage)
 src/lib/url-params.ts                   — deep-link URL param parsing
 src/lib/utils.ts                        — cn() tailwind helper
 src/components/email-editor/
   ComposePanel.tsx                      — compose form
   ConfigPanel.tsx                       — settings (logo, domain, company)
-  PreviewPanel.tsx                      — live email preview
+  PreviewPanel.tsx                      — live markdown + HTML email preview
   SendHistory.tsx                       — past sends from Turso
+  TemplatesPanel.tsx                    — full create/use template manager
 src/pages/docs.tsx                      — docs route
 lib/db/src/turso/
-  client.ts                             — createDbIfConfigured()
-  queries.ts                            — getAppState(), upsertAppState(), insertEmailSend()
-  schema.ts                             — Drizzle schema
+  client.ts                             — createDbIfConfigured(), schema migration
+  queries.ts                            — template CRUD + app state / send history helpers
+  schema.ts                             — Drizzle schema, including templates.guide
 ```
 
 ---
@@ -161,7 +163,8 @@ VITE_TURSO_AUTH_TOKEN=your-token
 |---|---|
 | `email-config-v1` | EmailConfig JSON |
 | `compose-draft-v1` | ComposeState JSON |
-| send_history table | every send attempt via insertEmailSend() |
+| `templates` table | saved templates, including `content` and `guide` |
+| `send_history` table | every send attempt via insertEmailSend() |
 
 **Fallback:** If env vars are missing → everything uses `localStorage`. App works fine either way.
 
@@ -183,6 +186,15 @@ User clicks Save Config
 After every send attempt
   → insertEmailSend(db, {...})           writes to Turso send history
 ```
+
+## Template Management & Preview Flow
+
+- `TemplatesPanel.tsx` has two modes: `use` and `create`.
+- `use` loads saved templates from Turso, detects fields from the template content, lets the user fill `{{field}}` values, and sends using the current persisted branding config.
+- `create` lets the user write Markdown, toggle a live preview, and save the template to Turso.
+- `generateGuide()` is called on save, and the output is stored in `templates.guide` so saved templates carry field metadata.
+- The live preview uses `PreviewPanel`, which parses Markdown with `marked` and renders the final branded HTML in an iframe.
+- New templates are previewed with `defaultConfig`, not the saved persisted config, so the create flow stays consistent with the default theme.
 
 ---
 
@@ -290,6 +302,9 @@ Supported in message content:
 - `{{year}}` → current year
 - `{{company_name}}` → EmailConfig.companyName
 - `{{company_address}}` → EmailConfig.companyAddress
+- `{{field}}` → user-entered dynamic placeholders detected by `generateGuide()` and filled in `TemplatesPanel`
+
+The preview pipeline renders Markdown through `marked` and then wraps it in the branded HTML from `generateEmailHtml()`.
 
 ---
 
