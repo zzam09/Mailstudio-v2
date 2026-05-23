@@ -1,0 +1,84 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: 220 15% 98%;
+  --foreground: 226 25% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 226 25% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 226 25% 10%;
+  --primary: 226 25% 12%;
+  --primary-foreground: 220 15% 98%;
+  --secondary: 220 12% 92%;
+  --secondary-foreground: 226 25% 12%;
+  --muted: 220 12% 93%;
+  --muted-foreground: 220 8% 46%;
+  --accent: 220 12% 92%;
+  --accent-foreground: 226 25% 12%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 220 10% 88%;
+  --input: 220 10% 88%;
+  --ring: 226 25% 50%;
+}
+
+.dark {
+  --background: 226 22% 8%;
+  --foreground: 220 10% 95%;
+  --card: 226 18% 13%;
+  --card-foreground: 220 10% 95%;
+  --popover: 226 18% 13%;
+  --popover-foreground: 220 10% 95%;
+  --primary: 220 10% 90%;
+  --primary-foreground: 226 22% 8%;
+  --secondary: 226 15% 19%;
+  --secondary-foreground: 220 10% 95%;
+  --muted: 226 15% 18%;
+  --muted-foreground: 220 8% 56%;
+  --accent: 226 15% 19%;
+  --accent-foreground: 220 10% 95%;
+  --destructive: 0 63% 58%;
+  --destructive-foreground: 220 10% 95%;
+  --border: 220 8% 20%;
+  --input: 220 8% 22%;
+  --ring: 220 8% 42%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
