@@ -142,6 +142,9 @@ import type { ComposeState } from "@/App";
 
 Worker has CORS enabled for all origins. Handles `OPTIONS` preflight.
 
+- `POST /send-template` → fetch template from Turso + fill `{{fields}}` + send with config branding
+- `API.md` → full usage doc for external apps
+
 ---
 
 ## Turso DB Setup
