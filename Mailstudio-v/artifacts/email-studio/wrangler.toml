@@ -1,7 +1,8 @@
-name = "email-composer-studio"
-compatibility_date = "2025-01-01"
-compatibility_flags = ["nodejs_compat"]
+name = "mailstudio-v2"
+compatibility_date = "2026-05-23"
+
 pages_build_output_dir = "dist/public"
 
-[env.production]
-name = "email-composer-studio"
+[build]
+command = "pnpm build:web"
+cwd = "artifacts/email-studio"
