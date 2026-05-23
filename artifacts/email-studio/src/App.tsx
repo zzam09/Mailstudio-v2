@@ -1,4 +1,12 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  lazy,
+  Suspense,
+} from "react";
+
 import { Route, Switch, Link } from "wouter";
 import { Toaster } from "sonner";
 import { toast } from "sonner";
@@ -7,17 +15,35 @@ import { BookOpen, Clock3, FileText, Mail, Moon, Sun } from "lucide-react";
 import { getDb } from "@/lib/db";
 import { insertEmailSend } from "@workspace/db/turso";
 import { Button } from "@/components/ui/button";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { ConfigPanel } from "@/components/email-editor/ConfigPanel";
 import { ComposePanel } from "@/components/email-editor/ComposePanel";
 import { PreviewPanel } from "@/components/email-editor/PreviewPanel";
 import { SendHistory } from "@/components/email-editor/SendHistory";
 import { TemplatesPanel } from "@/components/email-editor/TemplatesPanel";
-import { defaultConfig, type EmailConfig } from "@/lib/email-config";
-import { loadPersistedConfig, loadPersistedDraft, savePersistedConfig, savePersistedDraft } from "@/lib/persistence";
+import {
+  defaultConfig,
+  type EmailConfig,
+} from "@/lib/email-config";
+import {
+  loadPersistedConfig,
+  loadPersistedDraft,
+  savePersistedConfig,
+  savePersistedDraft,
+} from "@/lib/persistence";
 import { generateEmailHtml } from "@/lib/email-template";
-import { parseUrlParams, applyUrlParams, hasUrlParams } from "@/lib/url-params";
-import DocsPage from "@/pages/docs";
+import {
+  parseUrlParams,
+  applyUrlParams,
+  hasUrlParams,
+} from "@/lib/url-params";
+
+const DocsPage = lazy(() => import("@/pages/docs"));
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -347,7 +373,11 @@ function ComposerLayout() {
 export default function App() {
   return (
     <Switch>
-      <Route path="/docs" component={DocsPage} />
+      <Route path="/docs">
+  <Suspense fallback={<div>Loading...</div>}>
+    <DocsPage />
+  </Suspense>
+</Route>
       <Route component={ComposerLayout} />
     </Switch>
   );
